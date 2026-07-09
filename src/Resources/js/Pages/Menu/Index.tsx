@@ -16,7 +16,7 @@ import { MenuCategory, MenuItem, MenuIndexProps } from './types';
 
 export default function Index() {
     const { t } = useTranslation();
-    const { categories, modifierGroups, auth } = usePage<MenuIndexProps>().props;
+    const { categories, modifierGroups, stations, auth } = usePage<MenuIndexProps>().props;
     const perms = auth.user?.permissions ?? [];
     const can = (p: string) => perms.includes(p);
 
@@ -115,6 +115,7 @@ export default function Index() {
                         categoryId={itemDialog.categoryId}
                         categories={categories}
                         modifierGroups={modifierGroups}
+                        stations={stations}
                         onSuccess={() => setItemDialog({ open: false, data: null, categoryId: 0 })}
                     />
                 )}

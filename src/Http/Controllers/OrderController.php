@@ -78,6 +78,7 @@ class OrderController extends Controller
             'customer_phone' => $validated['customer_phone'] ?? null,
             'customer_address' => $validated['customer_address'] ?? null,
             'status' => 'open',
+            'fired_at' => now(), // auto-fire to the kitchen on placement
             'discount' => $validated['discount'] ?? 0,
             'notes' => $validated['notes'] ?? null,
             'creator_id' => Auth::id(),
@@ -104,6 +105,7 @@ class OrderController extends Controller
             'customer_address' => $validated['customer_address'] ?? null,
             'discount' => $validated['discount'] ?? 0,
             'notes' => $validated['notes'] ?? null,
+            'fired_at' => now(), // re-fire on edit
         ]);
 
         OrderBuilder::syncItems($order, $validated['lines'], creatorId());

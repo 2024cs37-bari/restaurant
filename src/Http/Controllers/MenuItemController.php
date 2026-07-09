@@ -22,6 +22,7 @@ class MenuItemController extends Controller
 
         $item = MenuItem::create([
             'menu_category_id' => $validated['menu_category_id'],
+            'kitchen_station_id' => $validated['kitchen_station_id'] ?? null,
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],
@@ -48,6 +49,7 @@ class MenuItemController extends Controller
 
         $item->update([
             'menu_category_id' => $validated['menu_category_id'],
+            'kitchen_station_id' => $validated['kitchen_station_id'] ?? null,
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],

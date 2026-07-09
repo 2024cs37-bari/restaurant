@@ -16,6 +16,7 @@ class UpdateMenuItemRequest extends FormRequest
         return [
             // Scope the category to the current tenant to block cross-tenant assignment.
             'menu_category_id' => 'required|exists:menu_categories,id,created_by,' . creatorId(),
+            'kitchen_station_id' => 'nullable|exists:kitchen_stations,id,created_by,' . creatorId(),
             'name' => 'required|max:150',
             'description' => 'nullable|string|max:1000',
             'price' => 'required|numeric|min:0',

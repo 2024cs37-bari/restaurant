@@ -27,6 +27,7 @@ class PermissionTableSeeder extends Seeder
             'tables' => 'Tables',
             'reservations' => 'Reservations',
             'orders' => 'Orders',
+            'kitchen' => 'Kitchen',
         ];
 
         foreach ($crudGroups as $module => $label) {

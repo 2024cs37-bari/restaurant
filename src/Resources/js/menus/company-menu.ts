@@ -22,6 +22,11 @@ export const restaurantCompanyMenu = (t: (key: string) => string) => [
                 permission: 'manage-orders',
             },
             {
+                title: t('Kitchen'),
+                href: route('restaurant.kitchen.index'),
+                permission: 'manage-kitchen',
+            },
+            {
                 title: t('Menu'),
                 href: route('restaurant.menu.index'),
                 permission: 'manage-menu',
@@ -30,6 +35,11 @@ export const restaurantCompanyMenu = (t: (key: string) => string) => [
                 title: t('Modifiers'),
                 href: route('restaurant.modifier-groups.index'),
                 permission: 'manage-modifier-groups',
+            },
+            {
+                title: t('Kitchen Stations'),
+                href: route('restaurant.kitchen-stations.index'),
+                permission: 'manage-kitchen',
             },
             {
                 title: t('Floor'),

@@ -11,22 +11,24 @@ import { Plus, Trash2 } from 'lucide-react';
 import MediaPicker from '@/components/MediaPicker';
 import { formatCurrency } from '@/utils/helpers';
 import { menuItemPrice } from '../../utils/menuItemPrice.mjs';
-import { MenuItem, MenuCategory, ModifierGroup, Variation } from './types';
+import { MenuItem, MenuCategory, ModifierGroup, Variation, Station } from './types';
 
 interface Props {
     item?: MenuItem | null;
     categoryId: number;
     categories: MenuCategory[];
     modifierGroups: ModifierGroup[];
+    stations: Station[];
     onSuccess: () => void;
 }
 
-export default function ItemDialog({ item, categoryId, categories, modifierGroups, onSuccess }: Props) {
+export default function ItemDialog({ item, categoryId, categories, modifierGroups, stations, onSuccess }: Props) {
     const { t } = useTranslation();
     const isEdit = !!item;
 
-    const { data, setData, post, put, processing, errors } = useForm<any>({
+    const { data, setData, post, put, transform, processing, errors } = useForm<any>({
         menu_category_id: (item?.menu_category_id ?? categoryId).toString(),
+        kitchen_station_id: item?.kitchen_station_id ? item.kitchen_station_id.toString() : 'none',
         name: item?.name ?? '',
         description: item?.description ?? '',
         price: item?.price?.toString() ?? '0',
@@ -61,6 +63,7 @@ export default function ItemDialog({ item, categoryId, categories, modifierGroup
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((d: any) => ({ ...d, kitchen_station_id: d.kitchen_station_id === 'none' ? null : d.kitchen_station_id }));
         const done = { onSuccess: () => onSuccess(), preserveScroll: true };
         if (isEdit) put(route('restaurant.menu-items.update', item!.id), done);
         else post(route('restaurant.menu-items.store'), done);
@@ -99,6 +102,18 @@ export default function ItemDialog({ item, categoryId, categories, modifierGroup
                     <Label className="mb-1 block">{t('Image')}</Label>
                     <MediaPicker value={data.image} onChange={(v) => setData('image', Array.isArray(v) ? (v[0] ?? '') : v)} placeholder={t('Select image')} showPreview label="" />
                     <InputError message={errors.image} />
+                </div>
+
+                <div>
+                    <Label>{t('Kitchen Station')}</Label>
+                    <Select value={data.kitchen_station_id} onValueChange={(v) => setData('kitchen_station_id', v)}>
+                        <SelectTrigger><SelectValue placeholder={t('Unassigned')} /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="none">{t('Unassigned')}</SelectItem>
+                            {stations.map((s) => <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                    <InputError message={errors.kitchen_station_id} />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Zerp\Restaurant\Models\MenuCategory;
 use Zerp\Restaurant\Models\ModifierGroup;
+use Zerp\Restaurant\Models\KitchenStation;
 
 class MenuController extends Controller
 {
@@ -29,6 +30,8 @@ class MenuController extends Controller
             'categories' => $categories,
             'modifierGroups' => ModifierGroup::where('created_by', creatorId())
                 ->with('options')->orderBy('order')->get(),
+            'stations' => KitchenStation::where('created_by', creatorId())
+                ->orderBy('order')->get(['id', 'name']),
         ]);
     }
 }

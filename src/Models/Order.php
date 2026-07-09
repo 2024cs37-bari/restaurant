@@ -19,6 +19,7 @@ class Order extends Model
         'customer_phone',
         'customer_address',
         'status',
+        'fired_at',
         'subtotal',
         'discount',
         'total',
@@ -35,6 +36,7 @@ class Order extends Model
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
         'paid_at' => 'datetime',
+        'fired_at' => 'datetime',
     ];
 
     public function items()

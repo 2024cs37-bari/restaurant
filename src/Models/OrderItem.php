@@ -15,6 +15,7 @@ class OrderItem extends Model
         'name',
         'unit_price',
         'quantity',
+        'kitchen_status',
         'line_total',
         'notes',
     ];
@@ -28,6 +29,11 @@ class OrderItem extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function menuItem()
+    {
+        return $this->belongsTo(MenuItem::class, 'menu_item_id');
     }
 
     public function modifiers()

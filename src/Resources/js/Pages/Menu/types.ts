@@ -25,6 +25,7 @@ export interface ModifierGroup {
 export interface MenuItem {
     id: number;
     menu_category_id: number;
+    kitchen_station_id?: number | null;
     name: string;
     description?: string;
     price: number | string;
@@ -46,9 +47,12 @@ export interface MenuCategory {
     items?: MenuItem[];
 }
 
+export interface Station { id: number; name: string; }
+
 export interface MenuIndexProps {
     categories: MenuCategory[];
     modifierGroups: ModifierGroup[];
+    stations: Station[];
     auth: AuthContext;
     [key: string]: unknown;
 }

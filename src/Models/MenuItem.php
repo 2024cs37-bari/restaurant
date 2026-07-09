@@ -11,6 +11,7 @@ class MenuItem extends Model
 
     protected $fillable = [
         'menu_category_id',
+        'kitchen_station_id',
         'name',
         'description',
         'price',
@@ -32,6 +33,11 @@ class MenuItem extends Model
     public function category()
     {
         return $this->belongsTo(MenuCategory::class, 'menu_category_id');
+    }
+
+    public function station()
+    {
+        return $this->belongsTo(KitchenStation::class, 'kitchen_station_id');
     }
 
     public function variations()

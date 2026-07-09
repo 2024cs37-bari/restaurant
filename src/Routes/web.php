@@ -10,6 +10,8 @@ use Zerp\Restaurant\Http\Controllers\AreaController;
 use Zerp\Restaurant\Http\Controllers\RestaurantTableController;
 use Zerp\Restaurant\Http\Controllers\ReservationController;
 use Zerp\Restaurant\Http\Controllers\OrderController;
+use Zerp\Restaurant\Http\Controllers\KitchenController;
+use Zerp\Restaurant\Http\Controllers\KitchenStationController;
 
 Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->group(function () {
     Route::get('restaurant/menu', [MenuController::class, 'index'])->name('restaurant.menu.index');
@@ -72,5 +74,17 @@ Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->gr
         Route::put('/{order}', [OrderController::class, 'update'])->name('update');
         Route::post('/{order}/settle', [OrderController::class, 'settle'])->name('settle');
         Route::post('/{order}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    });
+
+    // Kitchen (KDS) + stations
+    Route::get('restaurant/kitchen', [KitchenController::class, 'index'])->name('restaurant.kitchen.index');
+    Route::post('restaurant/kitchen/items/{item}/status', [KitchenController::class, 'itemStatus'])->name('restaurant.kitchen.item-status');
+    Route::post('restaurant/kitchen/orders/{order}/ready', [KitchenController::class, 'orderReady'])->name('restaurant.kitchen.order-ready');
+
+    Route::prefix('restaurant/kitchen-stations')->name('restaurant.kitchen-stations.')->group(function () {
+        Route::get('/', [KitchenStationController::class, 'index'])->name('index');
+        Route::post('/', [KitchenStationController::class, 'store'])->name('store');
+        Route::put('/{station}', [KitchenStationController::class, 'update'])->name('update');
+        Route::delete('/{station}', [KitchenStationController::class, 'destroy'])->name('destroy');
     });
 });
