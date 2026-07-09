@@ -87,10 +87,21 @@ class MenuItemController extends Controller
             'lines.*.quantity' => 'required|numeric|min:0',
         ]);
 
+        // Only the tenant's own product-service items may be used as ingredients,
+        // otherwise a recipe could point at (and later deduct) another tenant's stock.
+        $ownedProductIds = [];
+        if (class_exists(\Zerp\ProductService\Models\ProductServiceItem::class)) {
+            $ownedProductIds = \Zerp\ProductService\Models\ProductServiceItem::where('created_by', creatorId())
+                ->pluck('id')->all();
+        }
+
         $item->recipe()->delete();
         foreach ($validated['lines'] ?? [] as $line) {
             if ((float) $line['quantity'] <= 0) {
                 continue;
+            }
+            if (!in_array((int) $line['product_id'], $ownedProductIds, true)) {
+                continue; // drop unknown / cross-tenant products
             }
             $item->recipe()->create([
                 'product_id' => $line['product_id'],
