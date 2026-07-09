@@ -24,6 +24,8 @@ class PermissionTableSeeder extends Seeder
         $crudGroups = [
             'menu' => 'Menu',
             'modifier-groups' => 'Modifier Groups',
+            'tables' => 'Tables',
+            'reservations' => 'Reservations',
         ];
 
         foreach ($crudGroups as $module => $label) {

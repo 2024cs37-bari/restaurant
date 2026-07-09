@@ -5,6 +5,10 @@ use Zerp\Restaurant\Http\Controllers\MenuController;
 use Zerp\Restaurant\Http\Controllers\MenuCategoryController;
 use Zerp\Restaurant\Http\Controllers\MenuItemController;
 use Zerp\Restaurant\Http\Controllers\ModifierGroupController;
+use Zerp\Restaurant\Http\Controllers\FloorController;
+use Zerp\Restaurant\Http\Controllers\AreaController;
+use Zerp\Restaurant\Http\Controllers\RestaurantTableController;
+use Zerp\Restaurant\Http\Controllers\ReservationController;
 
 Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->group(function () {
     Route::get('restaurant/menu', [MenuController::class, 'index'])->name('restaurant.menu.index');
@@ -27,5 +31,35 @@ Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->gr
         Route::post('/', [ModifierGroupController::class, 'store'])->name('store');
         Route::put('/{modifierGroup}', [ModifierGroupController::class, 'update'])->name('update');
         Route::delete('/{modifierGroup}', [ModifierGroupController::class, 'destroy'])->name('destroy');
+    });
+
+    // Floor & tables
+    Route::get('restaurant/floor', [FloorController::class, 'index'])->name('restaurant.floor.index');
+
+    Route::prefix('restaurant/areas')->name('restaurant.areas.')->group(function () {
+        Route::post('/', [AreaController::class, 'store'])->name('store');
+        Route::put('/{area}', [AreaController::class, 'update'])->name('update');
+        Route::delete('/{area}', [AreaController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('restaurant/tables')->name('restaurant.tables.')->group(function () {
+        Route::post('/', [RestaurantTableController::class, 'store'])->name('store');
+        Route::post('/merge', [RestaurantTableController::class, 'merge'])->name('merge');
+        Route::put('/{table}', [RestaurantTableController::class, 'update'])->name('update');
+        Route::delete('/{table}', [RestaurantTableController::class, 'destroy'])->name('destroy');
+        Route::post('/{table}/status', [RestaurantTableController::class, 'setStatus'])->name('status');
+        Route::post('/{table}/assign-waiter', [RestaurantTableController::class, 'assignWaiter'])->name('assign-waiter');
+        Route::post('/{table}/position', [RestaurantTableController::class, 'position'])->name('position');
+        Route::post('/{table}/split', [RestaurantTableController::class, 'split'])->name('split');
+    });
+
+    Route::prefix('restaurant/reservations')->name('restaurant.reservations.')->group(function () {
+        Route::get('/', [ReservationController::class, 'index'])->name('index');
+        Route::post('/', [ReservationController::class, 'store'])->name('store');
+        Route::put('/{reservation}', [ReservationController::class, 'update'])->name('update');
+        Route::delete('/{reservation}', [ReservationController::class, 'destroy'])->name('destroy');
+        Route::post('/{reservation}/seat', [ReservationController::class, 'seat'])->name('seat');
+        Route::post('/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('cancel');
+        Route::post('/{reservation}/no-show', [ReservationController::class, 'noShow'])->name('no-show');
     });
 });

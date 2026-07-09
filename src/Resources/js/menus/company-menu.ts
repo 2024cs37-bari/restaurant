@@ -21,6 +21,16 @@ export const restaurantCompanyMenu = (t: (key: string) => string) => [
                 href: route('restaurant.modifier-groups.index'),
                 permission: 'manage-modifier-groups',
             },
+            {
+                title: t('Floor'),
+                href: route('restaurant.floor.index'),
+                permission: 'manage-tables',
+            },
+            {
+                title: t('Reservations'),
+                href: route('restaurant.reservations.index'),
+                permission: 'manage-reservations',
+            },
         ],
     },
 ];

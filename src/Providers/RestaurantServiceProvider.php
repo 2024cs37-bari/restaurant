@@ -2,7 +2,9 @@
 
 namespace Zerp\Restaurant\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Zerp\Restaurant\Console\Commands\ReleaseTablesCommand;
 
 class RestaurantServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,15 @@ class RestaurantServiceProvider extends ServiceProvider
         $migrationsPath = __DIR__.'/../Database/Migrations';
         if (is_dir($migrationsPath)) {
             $this->loadMigrationsFrom($migrationsPath);
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([ReleaseTablesCommand::class]);
+
+            // Auto-release stale reserved tables every 5 minutes.
+            $this->app->booted(function () {
+                $this->app->make(Schedule::class)->command('restaurant:release-tables')->everyFiveMinutes();
+            });
         }
     }
 
