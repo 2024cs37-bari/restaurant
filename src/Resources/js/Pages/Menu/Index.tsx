@@ -12,16 +12,18 @@ import NoRecordsFound from '@/components/no-records-found';
 import ItemCard from './ItemCard';
 import CategoryDialog from './CategoryDialog';
 import ItemDialog from './ItemDialog';
+import RecipeDialog from './RecipeDialog';
 import { MenuCategory, MenuItem, MenuIndexProps } from './types';
 
 export default function Index() {
     const { t } = useTranslation();
-    const { categories, modifierGroups, stations, auth } = usePage<MenuIndexProps>().props;
+    const { categories, modifierGroups, stations, products, auth } = usePage<MenuIndexProps>().props;
     const perms = auth.user?.permissions ?? [];
     const can = (p: string) => perms.includes(p);
 
     const [categoryDialog, setCategoryDialog] = useState<{ open: boolean; data: MenuCategory | null }>({ open: false, data: null });
     const [itemDialog, setItemDialog] = useState<{ open: boolean; data: MenuItem | null; categoryId: number }>({ open: false, data: null, categoryId: 0 });
+    const [recipeItem, setRecipeItem] = useState<MenuItem | null>(null);
 
     const categoryDelete = useDeleteHandler({ routeName: 'restaurant.menu-categories.destroy', defaultMessage: t('Delete this category?') });
     const itemDelete = useDeleteHandler({ routeName: 'restaurant.menu-items.destroy', defaultMessage: t('Delete this item?') });
@@ -91,6 +93,7 @@ export default function Index() {
                                                 canEdit={can('edit-menu')}
                                                 canDelete={can('delete-menu')}
                                                 onEdit={(it) => setItemDialog({ open: true, data: it, categoryId: it.menu_category_id })}
+                                                onRecipe={(it) => setRecipeItem(it)}
                                                 onDelete={(id) => itemDelete.openDeleteDialog(id)}
                                             />
                                         ))}
@@ -106,6 +109,10 @@ export default function Index() {
                 {categoryDialog.open && (
                     <CategoryDialog category={categoryDialog.data} onSuccess={() => setCategoryDialog({ open: false, data: null })} />
                 )}
+            </Dialog>
+
+            <Dialog open={!!recipeItem} onOpenChange={(open) => !open && setRecipeItem(null)}>
+                {recipeItem && <RecipeDialog item={recipeItem} products={products} onSuccess={() => setRecipeItem(null)} />}
             </Dialog>
 
             <Dialog open={itemDialog.open} onOpenChange={(open) => setItemDialog({ ...itemDialog, open, data: open ? itemDialog.data : null })}>

@@ -141,6 +141,9 @@ class OrderController extends Controller
                 ->update(['status' => 'free']);
         }
 
+        // Consume ingredient stock per recipe (best-effort, never blocks settlement).
+        \Zerp\Restaurant\Support\StockDeductor::deductForOrder($order);
+
         // Post the sale as revenue into accounting (best-effort, never blocks settlement).
         $posting = \Zerp\Restaurant\Support\RevenuePoster::post($order);
 

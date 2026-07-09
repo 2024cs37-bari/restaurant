@@ -2,6 +2,7 @@
 
 namespace Zerp\Restaurant\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Zerp\Restaurant\Http\Requests\StoreMenuItemRequest;
@@ -73,6 +74,32 @@ class MenuItemController extends Controller
         $item->delete();
 
         return back()->with('success', __('The menu item has been deleted.'));
+    }
+
+    public function syncRecipe(Request $request, MenuItem $item)
+    {
+        if (!Auth::user()->can('edit-menu') || $item->created_by != creatorId()) {
+            return back()->with('error', __('Permission denied'));
+        }
+        $validated = $request->validate([
+            'lines' => 'nullable|array',
+            'lines.*.product_id' => 'required|integer',
+            'lines.*.quantity' => 'required|numeric|min:0',
+        ]);
+
+        $item->recipe()->delete();
+        foreach ($validated['lines'] ?? [] as $line) {
+            if ((float) $line['quantity'] <= 0) {
+                continue;
+            }
+            $item->recipe()->create([
+                'product_id' => $line['product_id'],
+                'quantity' => $line['quantity'],
+                'created_by' => creatorId(),
+            ]);
+        }
+
+        return back()->with('success', __('Recipe updated.'));
     }
 
     public function toggleAvailability(MenuItem $item)

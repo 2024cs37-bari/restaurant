@@ -2,7 +2,7 @@ import { router } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreVertical, Edit as EditIcon, Trash2, Clock, UtensilsCrossed } from "lucide-react";
+import { MoreVertical, Edit as EditIcon, Trash2, Clock, UtensilsCrossed, ClipboardList } from "lucide-react";
 import { formatCurrency, getImagePath } from '@/utils/helpers';
 import { MenuItem } from './types';
 
@@ -11,10 +11,11 @@ interface Props {
     canEdit: boolean;
     canDelete: boolean;
     onEdit: (item: MenuItem) => void;
+    onRecipe: (item: MenuItem) => void;
     onDelete: (id: number) => void;
 }
 
-export default function ItemCard({ item, canEdit, canDelete, onEdit, onDelete }: Props) {
+export default function ItemCard({ item, canEdit, canDelete, onEdit, onRecipe, onDelete }: Props) {
     const { t } = useTranslation();
 
     const priceLabel = () => {
@@ -44,6 +45,7 @@ export default function ItemCard({ item, canEdit, canDelete, onEdit, onDelete }:
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 {canEdit && <DropdownMenuItem onClick={() => onEdit(item)}><EditIcon className="h-3 w-3 mr-2" />{t('Edit')}</DropdownMenuItem>}
+                                {canEdit && <DropdownMenuItem onClick={() => onRecipe(item)}><ClipboardList className="h-3 w-3 mr-2" />{t('Recipe')}</DropdownMenuItem>}
                                 {canDelete && <DropdownMenuItem onClick={() => onDelete(item.id)} className="text-red-600"><Trash2 className="h-3 w-3 mr-2" />{t('Delete')}</DropdownMenuItem>}
                             </DropdownMenuContent>
                         </DropdownMenu>

@@ -22,9 +22,17 @@ class MenuController extends Controller
                 'items' => fn ($q) => $q->orderBy('order'),
                 'items.variations',
                 'items.modifierGroups.options',
+                'items.recipe',
             ])
             ->orderBy('order')
             ->get();
+
+        // Ingredient catalog for recipes comes from the product-service module.
+        $products = [];
+        if (class_exists(\Zerp\ProductService\Models\ProductServiceItem::class)) {
+            $products = \Zerp\ProductService\Models\ProductServiceItem::where('created_by', creatorId())
+                ->where('is_active', true)->orderBy('name')->get(['id', 'name', 'unit']);
+        }
 
         return Inertia::render('Restaurant/Menu/Index', [
             'categories' => $categories,
@@ -32,6 +40,7 @@ class MenuController extends Controller
                 ->with('options')->orderBy('order')->get(),
             'stations' => KitchenStation::where('created_by', creatorId())
                 ->orderBy('order')->get(['id', 'name']),
+            'products' => $products,
         ]);
     }
 }

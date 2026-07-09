@@ -27,6 +27,7 @@ Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->gr
         Route::put('/{item}', [MenuItemController::class, 'update'])->name('update');
         Route::delete('/{item}', [MenuItemController::class, 'destroy'])->name('destroy');
         Route::post('/{item}/toggle-availability', [MenuItemController::class, 'toggleAvailability'])->name('toggle-availability');
+        Route::post('/{item}/recipe', [MenuItemController::class, 'syncRecipe'])->name('recipe');
     });
 
     Route::prefix('restaurant/modifier-groups')->name('restaurant.modifier-groups.')->group(function () {

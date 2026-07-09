@@ -45,6 +45,11 @@ class MenuItem extends Model
         return $this->hasMany(MenuItemVariation::class)->orderBy('order');
     }
 
+    public function recipe()
+    {
+        return $this->hasMany(Recipe::class);
+    }
+
     public function modifierGroups()
     {
         return $this->belongsToMany(ModifierGroup::class, 'menu_item_modifier_group')

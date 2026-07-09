@@ -35,7 +35,11 @@ export interface MenuItem {
     order?: number;
     variations?: Variation[];
     modifier_groups?: ModifierGroup[];
+    recipe?: RecipeLine[];
 }
+
+export interface RecipeLine { id?: number; product_id: number; quantity: number | string; }
+export interface Product { id: number; name: string; unit?: string | null; }
 
 export interface MenuCategory {
     id: number;
@@ -53,6 +57,7 @@ export interface MenuIndexProps {
     categories: MenuCategory[];
     modifierGroups: ModifierGroup[];
     stations: Station[];
+    products: Product[];
     auth: AuthContext;
     [key: string]: unknown;
 }
