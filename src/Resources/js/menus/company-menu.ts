@@ -12,6 +12,16 @@ export const restaurantCompanyMenu = (t: (key: string) => string) => [
         order: 520,
         children: [
             {
+                title: t('POS'),
+                href: route('restaurant.pos.index'),
+                permission: 'create-orders',
+            },
+            {
+                title: t('Orders'),
+                href: route('restaurant.orders.index'),
+                permission: 'manage-orders',
+            },
+            {
                 title: t('Menu'),
                 href: route('restaurant.menu.index'),
                 permission: 'manage-menu',

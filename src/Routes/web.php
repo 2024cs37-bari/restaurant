@@ -9,6 +9,7 @@ use Zerp\Restaurant\Http\Controllers\FloorController;
 use Zerp\Restaurant\Http\Controllers\AreaController;
 use Zerp\Restaurant\Http\Controllers\RestaurantTableController;
 use Zerp\Restaurant\Http\Controllers\ReservationController;
+use Zerp\Restaurant\Http\Controllers\OrderController;
 
 Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->group(function () {
     Route::get('restaurant/menu', [MenuController::class, 'index'])->name('restaurant.menu.index');
@@ -61,5 +62,15 @@ Route::middleware(['web', 'auth', 'verified', 'PlanModuleCheck:Restaurant'])->gr
         Route::post('/{reservation}/seat', [ReservationController::class, 'seat'])->name('seat');
         Route::post('/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('cancel');
         Route::post('/{reservation}/no-show', [ReservationController::class, 'noShow'])->name('no-show');
+    });
+
+    // Orders & POS
+    Route::get('restaurant/pos', [OrderController::class, 'pos'])->name('restaurant.pos.index');
+    Route::prefix('restaurant/orders')->name('restaurant.orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::post('/', [OrderController::class, 'store'])->name('store');
+        Route::put('/{order}', [OrderController::class, 'update'])->name('update');
+        Route::post('/{order}/settle', [OrderController::class, 'settle'])->name('settle');
+        Route::post('/{order}/cancel', [OrderController::class, 'cancel'])->name('cancel');
     });
 });
