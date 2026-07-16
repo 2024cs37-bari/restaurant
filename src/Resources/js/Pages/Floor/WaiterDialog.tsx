@@ -19,7 +19,7 @@ export default function WaiterDialog({ table, waiters, onSuccess }: { table: Res
 
     return (
         <DialogContent>
-            <DialogHeader><DialogTitle>{t('Assign Waiter')} — {table.name}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t('Assign Waiter')} - {table.name}</DialogTitle></DialogHeader>
             <div className="py-2">
                 <Label>{t('Waiter')}</Label>
                 <Select value={waiterId} onValueChange={setWaiterId}>

@@ -1,7 +1,7 @@
 {
     "name": "Restaurant",
     "alias": "Restaurant",
-    "description": "Restaurant management — menu, orders, kitchen",
+    "description": "Restaurant management - menu, orders, kitchen",
     "priority": 46,
     "version": 1.0,
     "monthly_price": 0,

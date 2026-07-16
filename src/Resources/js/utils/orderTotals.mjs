@@ -1,4 +1,4 @@
-// Client-side running totals for the POS cart (display only — the server
+// Client-side running totals for the POS cart (display only - the server
 // recomputes authoritatively from the tenant's menu on save).
 //
 // A cart line: { unit_price, quantity, modifiers: [{ price }] }

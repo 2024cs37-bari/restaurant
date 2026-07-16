@@ -144,7 +144,7 @@ export default function ItemDialog({ item, categoryId, categories, modifierGroup
                         <Label>{t('Size Variations')}</Label>
                         <Button type="button" size="sm" variant="outline" onClick={addVariation}><Plus className="h-3 w-3 mr-1" />{t('Add')}</Button>
                     </div>
-                    {data.variations.length === 0 && <p className="text-xs text-gray-400">{t('No variations — the base price is used.')}</p>}
+                    {data.variations.length === 0 && <p className="text-xs text-gray-400">{t('No variations - the base price is used.')}</p>}
                     {data.variations.map((v: any, i: number) => (
                         <div key={i} className="flex gap-2 mb-2">
                             <Input placeholder={t('e.g. Large')} value={v.name} onChange={(e) => setVariation(i, 'name', e.target.value)} />
