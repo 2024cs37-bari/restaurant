@@ -1,6 +1,6 @@
 {
     "name": "zerp/restaurant",
-    "description": "Restaurant management module for Zerp — menu, orders and kitchen",
+    "description": "Restaurant management module for Zerp - menu, orders and kitchen",
     "type": "library",
     "license": "MIT",
     "require": {},

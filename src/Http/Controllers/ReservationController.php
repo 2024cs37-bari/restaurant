@@ -79,7 +79,7 @@ class ReservationController extends Controller
         }
 
         $reservation->update(['status' => 'seated']);
-        // Seating a reservation occupies its table — the join point orders will use.
+        // Seating a reservation occupies its table - the join point orders will use.
         RestaurantTable::where('id', $reservation->restaurant_table_id)
             ->where('created_by', creatorId())
             ->update(['status' => 'seated']);

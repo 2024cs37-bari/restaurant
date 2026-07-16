@@ -29,7 +29,7 @@ export default function SettleDialog({ order, bankAccounts, onSuccess }: { order
 
     return (
         <DialogContent>
-            <DialogHeader><DialogTitle>{t('Settle')} — {order.order_number}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t('Settle')} - {order.order_number}</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -54,7 +54,7 @@ export default function SettleDialog({ order, bankAccounts, onSuccess }: { order
                         <SelectTrigger><SelectValue placeholder={t('None')} /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="none">{t('None')}</SelectItem>
-                            {bankAccounts.map((b) => <SelectItem key={b.id} value={b.id.toString()}>{b.account_name} — {b.bank_name}</SelectItem>)}
+                            {bankAccounts.map((b) => <SelectItem key={b.id} value={b.id.toString()}>{b.account_name} - {b.bank_name}</SelectItem>)}
                         </SelectContent>
                     </Select>
                     {bankAccounts.length === 0 && <p className="text-xs text-amber-600 mt-1">{t('No bank accounts found. Revenue posting to accounting needs one configured.')}</p>}

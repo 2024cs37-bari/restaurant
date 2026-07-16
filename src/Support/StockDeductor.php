@@ -9,7 +9,7 @@ use Zerp\Restaurant\Models\Recipe;
 /**
  * Deducts ingredient stock for a settled order: for each sold menu item, each of
  * its recipe lines consumes (recipe.quantity × item.quantity) from the
- * product-service WarehouseStock. Best-effort — never blocks a sale:
+ * product-service WarehouseStock. Best-effort - never blocks a sale:
  *  - no-op if the product-service module isn't installed,
  *  - skips ingredients with no stock row,
  *  - allows stock to go negative (over-consumption is surfaced, not prevented).

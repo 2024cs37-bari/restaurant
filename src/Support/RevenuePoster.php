@@ -13,7 +13,7 @@ use Zerp\Restaurant\Models\Order;
  *
  * Degrades gracefully: if the account module isn't installed, or the tenant's
  * chart of accounts isn't set up (no bank GL account / no revenue category with a
- * GL account), it records nothing and returns a reason — settlement is never blocked.
+ * GL account), it records nothing and returns a reason - settlement is never blocked.
  *
  * @return array{posted: bool, reason?: string, revenue_id?: int}
  */
@@ -37,7 +37,7 @@ class RevenuePoster
 
             // Reuse an existing revenue category that has a GL account (prefer one
             // that looks restaurant/sales related). We never fabricate a chart of
-            // accounts — that's the tenant's accounting setup.
+            // accounts - that's the tenant's accounting setup.
             $category = \Zerp\Account\Models\RevenueCategories::where('created_by', creatorId())
                 ->whereNotNull('gl_account_id')
                 ->orderByRaw("(category_name LIKE '%Restaurant%' OR category_name LIKE '%Sales%') DESC")

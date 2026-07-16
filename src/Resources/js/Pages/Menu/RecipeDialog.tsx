@@ -30,7 +30,7 @@ export default function RecipeDialog({ item, products, onSuccess }: { item: Menu
 
     return (
         <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>{t('Recipe')} — {item.name}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t('Recipe')} - {item.name}</DialogTitle></DialogHeader>
             <form onSubmit={submit} className="space-y-4">
                 <p className="text-xs text-gray-500">{t('Ingredients consumed each time this item sells. Stock deducts on settlement.')}</p>
                 {products.length === 0 && <p className="text-xs text-amber-600">{t('No product-service items found. Add ingredients in Product & Service first.')}</p>}
