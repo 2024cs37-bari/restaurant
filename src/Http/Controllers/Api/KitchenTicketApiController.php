@@ -24,7 +24,7 @@ class KitchenTicketApiController extends Controller
             $orders = Order::query()
                 ->with(['table', 'items.menuItem', 'items.variation'])
                 ->where('created_by', creatorId())
-                ->whereIn('kitchen_status', ['pending', 'in_prep', 'ready'])
+                ->whereIn('status', ['pending', 'in_prep', 'ready'])
                 ->when($request->station_id, function($q) use ($request) {
                     $q->whereHas('items.menuItem', fn($query) => $query->where('kitchen_station_id', $request->station_id));
                 })
@@ -47,7 +47,7 @@ class KitchenTicketApiController extends Controller
             }
 
             $request->validate([
-                'kitchen_status' => 'required|in:pending,in_prep,ready,served,cancelled'
+                'status' => 'required|in:pending,in_prep,ready,served,completed,cancelled'
             ]);
 
             $order = Order::where('id', $id)
@@ -58,7 +58,10 @@ class KitchenTicketApiController extends Controller
                 return $this->errorResponse(__('Order not found'), null, 404);
             }
 
-            $order->kitchen_status = $request->kitchen_status;
+            $order->status = $request->status;
+            if ($request->status === 'in_prep' && !$order->fired_at) {
+                $order->fired_at = now();
+            }
             $order->save();
 
             return $this->successResponse($order, __('Kitchen status updated successfully'));

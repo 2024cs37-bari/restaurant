@@ -8,9 +8,9 @@ use Zerp\Restaurant\Http\Controllers\Api\OrderApiController;
 use Zerp\Restaurant\Http\Controllers\Api\KitchenTicketApiController;
 
 Route::prefix('api')->middleware(['api.json'])->group(function () {
-    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'restaurant'], function () {
+    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'restaurant', 'as' => 'api.restaurant.'], function () {
         // Dashboard
-        Route::get('dashboard', [DashboardApiController::class, 'index']);
+        Route::get('dashboard', [DashboardApiController::class, 'index'])->name('dashboard');
 
         // Menu Items
         Route::apiResource('menu-items', MenuItemApiController::class);
@@ -22,7 +22,7 @@ Route::prefix('api')->middleware(['api.json'])->group(function () {
         Route::apiResource('orders', OrderApiController::class);
 
         // Kitchen Tickets (KDS)
-        Route::get('kitchen-tickets', [KitchenTicketApiController::class, 'index']);
-        Route::patch('kitchen-tickets/{id}/status', [KitchenTicketApiController::class, 'updateStatus']);
+        Route::get('kitchen-tickets', [KitchenTicketApiController::class, 'index'])->name('kitchen-tickets.index');
+        Route::patch('kitchen-tickets/{id}/status', [KitchenTicketApiController::class, 'updateStatus'])->name('kitchen-tickets.update-status');
     });
 });

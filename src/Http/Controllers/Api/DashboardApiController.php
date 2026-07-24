@@ -28,7 +28,7 @@ class DashboardApiController extends Controller
             $totalMenuItems = MenuItem::where('created_by', $creatorId)->count();
             $totalTables = RestaurantTable::where('created_by', $creatorId)->count();
             $totalOrdersToday = Order::where('created_by', $creatorId)->whereDate('created_at', now()->today())->count();
-            $pendingKitchenTickets = Order::where('created_by', $creatorId)->whereIn('kitchen_status', ['pending', 'in_prep'])->count();
+            $pendingKitchenTickets = Order::where('created_by', $creatorId)->whereIn('status', ['pending', 'in_prep'])->count();
 
             $recentOrders = Order::where('created_by', $creatorId)
                 ->with(['table', 'items.menuItem'])
