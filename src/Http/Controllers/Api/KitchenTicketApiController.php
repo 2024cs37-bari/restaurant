@@ -7,9 +7,17 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Zerp\Restaurant\Http\Requests\Api\UpdateKitchenStatusApiRequest;
 use Zerp\Restaurant\Models\Order;
-use Zerp\Restaurant\Models\KitchenStation;
+use Zerp\Restaurant\Models\OrderItem;
 
+/**
+ * The Kitchen Display System, mirroring the web KitchenController: a ticket is a
+ * fired, still-open order and its unserved items. The kitchen state lives on the
+ * order items as kitchen_status (pending/ready/served), not on the order (whose
+ * own status is open/completed/cancelled), so the list filters items by it and
+ * the status update targets an item. See zerp-pk/zerp#27.
+ */
 class KitchenTicketApiController extends Controller
 {
     use ApiResponseTrait;
@@ -17,55 +25,57 @@ class KitchenTicketApiController extends Controller
     public function index(Request $request)
     {
         try {
-            if (!Auth::user()->can('manage-kitchen-tickets')) {
+            if (!Auth::user()->can('manage-kitchen')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
-            $orders = Order::query()
-                ->with(['table', 'items.menuItem', 'items.variation'])
-                ->where('created_by', creatorId())
-                ->whereIn('status', ['pending', 'in_prep', 'ready'])
-                ->when($request->station_id, function($q) use ($request) {
-                    $q->whereHas('items.menuItem', fn($query) => $query->where('kitchen_station_id', $request->station_id));
-                })
-                ->latest()
+            $orders = Order::where('created_by', creatorId())
+                ->where('status', 'open')
+                ->whereNotNull('fired_at')
+                ->with([
+                    'items' => fn ($q) => $q->where('kitchen_status', '!=', 'served'),
+                    'items.menuItem:id,name,kitchen_station_id',
+                    'table:id,name',
+                ])
+                ->when($request->station_id, fn ($q) => $q->whereHas(
+                    'items.menuItem',
+                    fn ($query) => $query->where('kitchen_station_id', $request->station_id)
+                ))
+                ->orderBy('fired_at')
                 ->paginate($request->get('per_page', 10))
                 ->withQueryString();
 
             return $this->paginatedResponse($orders, __('Kitchen tickets retrieved successfully'));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('KitchenTicket API index error', ['e' => $e]);
             return $this->errorResponse(__('Something went wrong'), null, 500);
         }
     }
 
-    public function updateStatus(Request $request, $id)
+    /**
+     * Update a single order item's kitchen status. {id} is the order item id.
+     * Statuses match the web KDS (pending/ready/served); the item is reachable
+     * only when its order belongs to the caller's company.
+     */
+    public function updateStatus(UpdateKitchenStatusApiRequest $request, $id)
     {
         try {
-            if (!Auth::user()->can('manage-kitchen-tickets')) {
+            if (!Auth::user()->can('edit-kitchen')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
-            $request->validate([
-                'status' => 'required|in:pending,in_prep,ready,served,completed,cancelled'
-            ]);
-
-            $order = Order::where('id', $id)
-                ->where('created_by', creatorId())
+            $item = OrderItem::where('id', $id)
+                ->whereHas('order', fn ($q) => $q->where('created_by', creatorId()))
                 ->first();
 
-            if (!$order) {
-                return $this->errorResponse(__('Order not found'), null, 404);
+            if (!$item) {
+                return $this->errorResponse(__('Kitchen ticket item not found'), null, 404);
             }
 
-            $order->status = $request->status;
-            if ($request->status === 'in_prep' && !$order->fired_at) {
-                $order->fired_at = now();
-            }
-            $order->save();
+            $item->update(['kitchen_status' => $request->validated()['kitchen_status']]);
 
-            return $this->successResponse($order, __('Kitchen status updated successfully'));
-        } catch (\Exception $e) {
+            return $this->successResponse($item, __('Kitchen status updated successfully'));
+        } catch (\Throwable $e) {
             Log::error('KitchenTicket API updateStatus error', ['e' => $e]);
             return $this->errorResponse(__('Something went wrong'), null, 500);
         }

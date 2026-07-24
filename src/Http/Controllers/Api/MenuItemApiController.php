@@ -18,16 +18,16 @@ class MenuItemApiController extends Controller
     public function index(Request $request)
     {
         try {
-            if (!Auth::user()->can('manage-menu-items')) {
+            if (!Auth::user()->can('manage-menu')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
             $items = MenuItem::query()
                 ->with(['category', 'kitchenStation', 'variations', 'modifierGroups'])
                 ->where(function($q) {
-                    if (Auth::user()->can('manage-any-menu-items')) {
+                    if (Auth::user()->can('manage-any-menu')) {
                         $q->where('created_by', creatorId());
-                    } elseif (Auth::user()->can('manage-own-menu-items')) {
+                    } elseif (Auth::user()->can('manage-own-menu')) {
                         $q->where('creator_id', Auth::id());
                     } else {
                         $q->whereRaw('1 = 0');
@@ -52,7 +52,7 @@ class MenuItemApiController extends Controller
     public function store(StoreMenuItemApiRequest $request)
     {
         try {
-            if (!Auth::user()->can('create-menu-items')) {
+            if (!Auth::user()->can('create-menu')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
@@ -81,16 +81,16 @@ class MenuItemApiController extends Controller
     public function show($id)
     {
         try {
-            if (!Auth::user()->can('manage-menu-items')) {
+            if (!Auth::user()->can('manage-menu')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
             $item = MenuItem::with(['category', 'kitchenStation', 'variations', 'modifierGroups'])
                 ->where('id', $id)
                 ->where(function($q) {
-                    if (Auth::user()->can('manage-any-menu-items')) {
+                    if (Auth::user()->can('manage-any-menu')) {
                         $q->where('created_by', creatorId());
-                    } elseif (Auth::user()->can('manage-own-menu-items')) {
+                    } elseif (Auth::user()->can('manage-own-menu')) {
                         $q->where('creator_id', Auth::id());
                     } else {
                         $q->whereRaw('1 = 0');
@@ -112,7 +112,7 @@ class MenuItemApiController extends Controller
     public function update(UpdateMenuItemApiRequest $request, $id)
     {
         try {
-            if (!Auth::user()->can('edit-menu-items')) {
+            if (!Auth::user()->can('edit-menu')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
@@ -146,7 +146,7 @@ class MenuItemApiController extends Controller
     public function destroy($id)
     {
         try {
-            if (!Auth::user()->can('delete-menu-items')) {
+            if (!Auth::user()->can('delete-menu')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 

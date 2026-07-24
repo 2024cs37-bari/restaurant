@@ -28,7 +28,14 @@ class DashboardApiController extends Controller
             $totalMenuItems = MenuItem::where('created_by', $creatorId)->count();
             $totalTables = RestaurantTable::where('created_by', $creatorId)->count();
             $totalOrdersToday = Order::where('created_by', $creatorId)->whereDate('created_at', now()->today())->count();
-            $pendingKitchenTickets = Order::where('created_by', $creatorId)->whereIn('status', ['pending', 'in_prep'])->count();
+            // Active kitchen tickets: fired, still-open orders that still have an
+            // unserved item. Kitchen state is per item (kitchen_status), not the
+            // order's own status (open/completed/cancelled).
+            $pendingKitchenTickets = Order::where('created_by', $creatorId)
+                ->where('status', 'open')
+                ->whereNotNull('fired_at')
+                ->whereHas('items', fn ($q) => $q->where('kitchen_status', '!=', 'served'))
+                ->count();
 
             $recentOrders = Order::where('created_by', $creatorId)
                 ->with(['table', 'items.menuItem'])

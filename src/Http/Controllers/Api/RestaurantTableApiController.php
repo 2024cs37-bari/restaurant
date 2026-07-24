@@ -18,16 +18,16 @@ class RestaurantTableApiController extends Controller
     public function index(Request $request)
     {
         try {
-            if (!Auth::user()->can('manage-restaurant-tables')) {
+            if (!Auth::user()->can('manage-tables')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
             $tables = RestaurantTable::query()
                 ->with('area')
                 ->where(function($q) {
-                    if (Auth::user()->can('manage-any-restaurant-tables')) {
+                    if (Auth::user()->can('manage-any-tables')) {
                         $q->where('created_by', creatorId());
-                    } elseif (Auth::user()->can('manage-own-restaurant-tables')) {
+                    } elseif (Auth::user()->can('manage-own-tables')) {
                         $q->where('creator_id', Auth::id());
                     } else {
                         $q->whereRaw('1 = 0');
@@ -49,7 +49,7 @@ class RestaurantTableApiController extends Controller
     public function store(StoreTableApiRequest $request)
     {
         try {
-            if (!Auth::user()->can('create-restaurant-tables')) {
+            if (!Auth::user()->can('create-tables')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
@@ -76,16 +76,16 @@ class RestaurantTableApiController extends Controller
     public function show($id)
     {
         try {
-            if (!Auth::user()->can('manage-restaurant-tables')) {
+            if (!Auth::user()->can('manage-tables')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
             $table = RestaurantTable::with('area')
                 ->where('id', $id)
                 ->where(function($q) {
-                    if (Auth::user()->can('manage-any-restaurant-tables')) {
+                    if (Auth::user()->can('manage-any-tables')) {
                         $q->where('created_by', creatorId());
-                    } elseif (Auth::user()->can('manage-own-restaurant-tables')) {
+                    } elseif (Auth::user()->can('manage-own-tables')) {
                         $q->where('creator_id', Auth::id());
                     } else {
                         $q->whereRaw('1 = 0');
@@ -107,7 +107,7 @@ class RestaurantTableApiController extends Controller
     public function update(UpdateTableApiRequest $request, $id)
     {
         try {
-            if (!Auth::user()->can('edit-restaurant-tables')) {
+            if (!Auth::user()->can('edit-tables')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
@@ -138,7 +138,7 @@ class RestaurantTableApiController extends Controller
     public function destroy($id)
     {
         try {
-            if (!Auth::user()->can('delete-restaurant-tables')) {
+            if (!Auth::user()->can('delete-tables')) {
                 return $this->errorResponse(__('Permission denied'), null, 403);
             }
 
